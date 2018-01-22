@@ -10,16 +10,16 @@ CREATE FUNCTION clean_name
   RETURNS varchar(100)
 BEGIN
   IF RIGHT(premise_name,3)='THE' THEN
-    SET premise_name = REPLACE(REPLACE(premise_name,',THE',''),', THE','') ;
-    END IF;
+     SET premise_name = REPLACE(REPLACE(premise_name,',THE',''),', THE','') ;
+  END IF;
 ###unify 'CO'
     IF SUBSTRING_INDEX(premise_name, ' ', -1)= 'CORP' OR SUBSTRING_INDEX(premise_name, ' ', -1)= 'CORPORATION' THEN
-  SET premise_name=REPLACE(REPLACE(premise_name,'CORP','CO '),'CORPORATION','CO ');
-  END IF;
+       SET premise_name=REPLACE(REPLACE(premise_name,'CORP','CO '),'CORPORATION','CO ');
+    END IF;
 ###extract names
-    SET premise_name=substring_index(premise_name,' CO ',1);
-    SET premise_name=substring_index(premise_name,' LLC',1);
-    SET premise_name=substring_index(premise_name,' INC',1);
+  SET premise_name=substring_index(premise_name,' CO ',1);
+  SET premise_name=substring_index(premise_name,' LLC',1);
+  SET premise_name=substring_index(premise_name,' INC',1);
   SET premise_name=substring_index(premise_name,' OPERATING',1);
   SET premise_name=substring_index(premise_name,' COMPANY',1);
   SET premise_name=substring_index(premise_name,' RESTAURANT',1);
@@ -45,14 +45,14 @@ CREATE FUNCTION clean_address
   RETURNS varchar(100) 
 BEGIN
 ###extract street
-    SET Address=PREG_CAPTURE(
+  SET Address=PREG_CAPTURE(
            '/[\\d(\\-\\w)?]{0,4}([\\s\\w+\\b]{1,20})?((\\sStreet\\b)|(\\sSTREET\\b)|(\\sAVE\\b)|(\\sST\\b)|(\\sRD\\b)|(\\sROAD\\b)|(\\sAVE?NUE\\b)|(\\sMALL\\b)|(\\sBROADWAY\\b)|(\\sDR\\b)|(\\sBOULEVARD\\b)|(\\sBLVD\\b)|(\\sLANE\\b)|(\\sCENTER\\b)|(ROUTE\\b)|(\\sPARK\\b)|(\\sRD\\b)|(\\sROUTE\\b)|(\\sLN\\b)|(\\sPL\\b)|(\\sBRG\\b)|(\\sCT\\b)|(\\sCIR\\b)|(\\sGATE\\b)|(\\sWAY\\b)|(\\sTPKE\\b)|(\\sPKWY\\b)|(\\sVLG\\b)|(\\sSQ\\b)|(\\sSAGE EST\\b)|(\\sHL\\b))[\\s\\d]{0,10}/',
            SUBSTRING_INDEX(Address, CHAR(13), 1), 0);
 ###unify street
-    SET Address=REPLACE(Address,'AVENUE','AVE');
-    SET Address=REPLACE(Address,'STREET','ST');
-    SET Address=REPLACE(Address,'ROAD','RD');
-    SET Address=REPLACE(Address,'LANE','LD');
+  SET Address=REPLACE(Address,'AVENUE','AVE');
+  SET Address=REPLACE(Address,'STREET','ST');
+  SET Address=REPLACE(Address,'ROAD','RD');
+  SET Address=REPLACE(Address,'LANE','LD');
   SET Address=REPLACE(Address,'BOULEVARD','BLVD');
   SET Address=REPLACE(Address,'DRRIVE','DR');
   SET Address=REPLACE(Address,'NEW KARNER','KARNER');
