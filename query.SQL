@@ -46,7 +46,7 @@ CREATE FUNCTION clean_address
 BEGIN
 ###extract street
   SET Address=PREG_CAPTURE(
-           '/[\\d(\\-\\w)?]{0,4}([\\s\\w+\\b]{1,20})?((\\sStreet\\b)|(\\sSTREET\\b)|(\\sAVE\\b)|(\\sST\\b)|(\\sRD\\b)|(\\sROAD\\b)|(\\sAVE?NUE\\b)|(\\sMALL\\b)|(\\sBROADWAY\\b)|(\\sDR\\b)|(\\sBOULEVARD\\b)|(\\sBLVD\\b)|(\\sLANE\\b)|(\\sCENTER\\b)|(ROUTE\\b)|(\\sPARK\\b)|(\\sRD\\b)|(\\sROUTE\\b)|(\\sLN\\b)|(\\sPL\\b)|(\\sBRG\\b)|(\\sCT\\b)|(\\sCIR\\b)|(\\sGATE\\b)|(\\sWAY\\b)|(\\sTPKE\\b)|(\\sPKWY\\b)|(\\sVLG\\b)|(\\sSQ\\b)|(\\sSAGE EST\\b)|(\\sHL\\b))[\\s\\d]{0,10}/',
+           '/[\\d]{0,4}(\\-)?(\\w)?[\\s\\w]{0,20}((\\sSTREET\\b)|(\\sAVE\\b)|(\\sST\\b)|(\\sRD\\b)|(\\sROAD\\b)|(\\sAVE?NUE\\b)|(\\sMALL\\b)|(\\sBROADWAY\\b)|(\\sDR\\b)|(\\sBOULEVARD\\b)|(\\sBLVD\\b)|(\\sLANE\\b)|(\\sCENTER\\b)|(ROUTE\\b)|(\\sPARK\\b)|(\\sRD\\b)|(\\sROUTE\\b)|(\\sLN\\b)|(\\sPL\\b)|(\\sBRG\\b)|(\\sCT\\b)|(\\sCIR\\b)|(\\sGATE\\b)|(\\sWAY\\b)|(\\sTPKE\\b)|(\\sPKWY\\b)|(\\sVLG\\b)|(\\sSQ\\b)|(\\sSAGE EST\\b)|(\\sHL\\b))(\\s[\\d]{0,4})?/',
            SUBSTRING_INDEX(Address, CHAR(13), 1), 0);
 ###unify street
   SET Address=REPLACE(Address,'AVENUE','AVE');
@@ -59,7 +59,7 @@ BEGIN
       RETURN Address;
 END//
 
-##match query by inner join street and match fuzzy names using soudex function
+##match query by inner join street and match fuzzy names using soundex function
 SELECT premises_name,address,license_class,license_type,expiration_date,license_status,name,street,city,state,zip_code,unique_ID 
 FROM (SELECT *, clean_name(premises_name) AS name1, soundex(clean_address(address)) AS address1,REPLACE(LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(address, CHAR(13), -1),',',-1),' ',-1),5),' ','') AS zipcodematched,
 replace(SUBSTRING_INDEX(SUBSTRING_INDEX(address, CHAR(13), -1),',',1),' ','') as citymatched
